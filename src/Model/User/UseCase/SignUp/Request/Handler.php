@@ -42,7 +42,7 @@ class Handler
             $this->confirmTokenizer->generate()
         );
 
-        $this->users->add($user);
+        $this->repository->add($user);
 
         $this->confirmTokenSender->send($user);
 

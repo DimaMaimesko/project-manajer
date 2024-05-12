@@ -13,11 +13,21 @@ class User
         protected \DateTimeImmutable $date,
         protected Email $email,
         protected string $hashedPassword,
-        protected string $confirmationToken,
+        protected ?string $confirmationToken,
         protected $status = self::STATUS_WAIT,
     )
     {
 
+    }
+
+    public function  confirmSignUp(): void
+    {
+        if (!$this->isWait()) {
+            throw new \DomainException('User is already confirmed.');
+        }
+
+        $this->status = self::STATUS_ACTIVE;
+        $this->confirmationToken = null;
     }
 
     public function isWait(): bool

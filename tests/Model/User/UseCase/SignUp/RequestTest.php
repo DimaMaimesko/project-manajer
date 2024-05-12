@@ -1,16 +1,13 @@
 <?php
 
-namespace App\Tests\Model\User\UseCase\SignUp\Request;
+namespace App\Tests\Model\User\UseCase\SignUp;
 
 use App\Model\User\Entity\Email;
 use App\Model\User\Entity\Id;
-use App\Model\User\Service\ConfirmTokenizer;
-use App\Model\User\Service\PasswordHasher;
-use PHPUnit\Framework\TestCase;
 use App\Model\User\Entity\User;
-use Ramsey\Uuid\Uuid;
+use PHPUnit\Framework\TestCase;
 
-class HandlerTest extends TestCase
+class RequestTest extends TestCase
 {
 
 
