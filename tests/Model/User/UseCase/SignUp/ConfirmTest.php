@@ -43,6 +43,9 @@ class ConfirmTest extends TestCase
         $user = new User(
             Id::next(),
             new \DateTimeImmutable(),
+        );
+
+        $user->signUpByEmail(
             new Email('dima.maimesko@gmail.com'),
             'hash',
             'token'
