@@ -1,56 +1,64 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Model\User\UseCase\SignUp\Request;
 
 use App\Model\Flusher;
-use App\Model\User\Entity\Email;
+use App\Model\User\Entity\User\Email;
 use App\Model\User\Entity\User\Id;
-use App\Model\User\Entity\UserRepository;
-use App\Model\User\Service\ConfirmTokenizer;
+use App\Model\User\Entity\User\User;
+use App\Model\User\Entity\User\UserRepository;
+use App\Model\User\Service\SignUpConfirmTokenizer;
 use App\Model\User\Service\ConfirmTokenSender;
 use App\Model\User\Service\PasswordHasher;
-use DateTimeImmutable;
-use Doctrine\ORM\EntityManagerInterface;
-use App\Model\User\Entity\User;
-use Ramsey\Uuid\Uuid;
 
 class Handler
 {
-    public function __construct(
-        protected UserRepository $repository,
-        protected PasswordHasher $passwordHasher,
-        protected Flusher $flusher,
-        protected ConfirmTokenizer $confirmTokenizer,
-        protected ConfirmTokenSender $confirmTokenSender
-    ){
-    }
+    private $users;
+    private $hasher;
+    private $tokenizer;
+    private $sender;
+    private $flusher;
 
+    public function __construct(
+        UserRepository $users,
+        PasswordHasher $hasher,
+        SignUpConfirmTokenizer $tokenizer,
+        ConfirmTokenSender $sender,
+        Flusher $flusher
+    )
+    {
+        $this->users = $users;
+        $this->hasher = $hasher;
+        $this->tokenizer = $tokenizer;
+        $this->sender = $sender;
+        $this->flusher = $flusher;
+    }
 
     public function handle(Command $command): void
     {
         $email = new Email($command->email);
 
-        if ($this->repository->hasByEmail($email)) {
+        if ($this->users->hasByEmail($email)) {
             throw new \DomainException('User already exists.');
         }
 
         $user = new User(
             Id::next(),
-            new \DateTimeImmutable(),
+            new \DateTimeImmutable()
         );
 
         $user->signUpByEmail(
             $email,
-            $this->passwordHasher->hash($command->password),
-            $this->confirmTokenizer->generate()
+            $this->hasher->hash($command->password),
+            $token = $this->tokenizer->generate()
         );
 
-        $this->repository->add($user);
+        $this->users->add($user);
 
-        $this->confirmTokenSender->send($user);
+        $this->sender->send($email, $token);
 
         $this->flusher->flush();
     }
-
-
 }
