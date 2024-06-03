@@ -44,12 +44,17 @@ class User
      * @var Network[]|ArrayCollection
      */
     private $networks;
+    /**
+     * @var Role
+     */
+    private $role;
 
     private function __construct(Id $id, \DateTimeImmutable $date)
     {
         $this->id = $id;
         $this->date = $date;
         $this->networks = new ArrayCollection();
+        $this->role = Role::user();
     }
 
     public static function signUpByEmail(Id $id, \DateTimeImmutable $date, Email $email, string $hash, string $token): self
@@ -114,6 +119,19 @@ class User
         }
         $this->passwordHash = $hash;
         $this->resetToken = null;
+    }
+
+    public function changeRole(Role $role): void
+    {
+        if ($this->role->isEqual($role)) {
+            throw new \DomainException('Role is already same.');
+        }
+        $this->role = $role;
+    }
+
+    public function getRole(): Role
+    {
+        return $this->role;
     }
 
     public function isNew(): bool
