@@ -33,10 +33,10 @@ class User
     private $email;
 
     #[ORM\Column(name: 'password_hash', type: 'string', length: 255, nullable: true)]
-    private string $passwordHash;
+    private $passwordHash;
 
     #[ORM\Column(name: 'confirm_token', type: 'string', length: 255, nullable: true)]
-    private string $confirmToken;
+    private $confirmToken;
 
     #[ORM\Embedded(class: ResetToken::class, columnPrefix: 'reset_token_')]
     private $resetToken;
@@ -47,6 +47,7 @@ class User
     /**
      * @var Network[]|ArrayCollection
      */
+    #[ORM\OneToMany(targetEntity: Network::class, mappedBy: 'user', cascade: ['persist'], orphanRemoval: true)]
     private $networks;
 
     #[Column(type: 'user_user_role', nullable: true)]
