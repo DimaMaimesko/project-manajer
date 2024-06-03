@@ -5,48 +5,51 @@ declare(strict_types=1);
 namespace App\Model\User\Entity\User;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Mapping as ORM;
 
+#[ORM\Entity(repositoryClass: UserRepository::class)]
+#[ORM\Table(
+    name: 'user_users',
+    uniqueConstraints: [
+    new ORM\UniqueConstraint(columns: ['email']),
+    new ORM\UniqueConstraint(columns: ['reset_token_token']),
+]
+),
+    ORM\Index(name: 'IDX_USER_USER_ID', columns: 'id')
+]
 class User
 {
     private const STATUS_NEW = 'new';
     private const STATUS_WAIT = 'wait';
     private const STATUS_ACTIVE = 'active';
 
-    /**
-     * @var Id
-     */
+    #[ORM\Column(type: 'user_user_id'), ORM\Id]
     private $id;
-    /**
-     * @var \DateTimeImmutable
-     */
-    private $date;
-    /**
-     * @var Email|null
-     */
+
+    #[ORM\Column(type: 'datetime_immutable')]
+    private \DateTimeImmutable $date;
+
+    #[ORM\Column(type: 'user_user_email', unique: true, nullable: true)]
     private $email;
-    /**
-     * @var string|null
-     */
-    private $passwordHash;
-    /**
-     * @var string|null
-     */
-    private $confirmToken;
-    /**
-     * @var ResetToken|null
-     */
+
+    #[ORM\Column(name: 'password_hash', type: 'string', length: 255, nullable: true)]
+    private string $passwordHash;
+
+    #[ORM\Column(name: 'confirm_token', type: 'string', length: 255, nullable: true)]
+    private string $confirmToken;
+
+    #[ORM\Embedded(class: ResetToken::class, columnPrefix: 'reset_token_')]
     private $resetToken;
-    /**
-     * @var string
-     */
-    private $status;
+
+    #[ORM\Column(type: 'string', length: 16)]
+    private string $status;
+
     /**
      * @var Network[]|ArrayCollection
      */
     private $networks;
-    /**
-     * @var Role
-     */
+
+    #[Column(type: 'user_user_role', nullable: true)]
     private $role;
 
     private function __construct(Id $id, \DateTimeImmutable $date)
