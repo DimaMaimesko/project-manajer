@@ -15,7 +15,7 @@ use Doctrine\ORM\Mapping as ORM;
     new ORM\UniqueConstraint(columns: ['reset_token_token']),
 ]
 ),
-    ORM\Index(name: 'IDX_USER_USER_ID', columns: 'id')
+    ORM\Index(name: 'IDX_USER_USER_ID', columns: ['id'])
 ]
 class User
 {
