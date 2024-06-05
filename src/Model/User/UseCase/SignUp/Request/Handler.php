@@ -46,7 +46,7 @@ class Handler
 
         $user = User::signUpByEmail(
             Id::next(),
-            new \DateTimeImmutable().
+            new \DateTimeImmutable(),
             $email,
             $this->hasher->hash($command->password),
             $token = $this->tokenizer->generate()

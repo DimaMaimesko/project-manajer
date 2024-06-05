@@ -4,55 +4,51 @@ declare(strict_types=1);
 
 namespace App\Model\User\Entity\User;
 
-use App\Model\User\EntityNotFoundException;
+use App\Model\EntityNotFoundException;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\EntityRepository;
+use Doctrine\Persistence\ManagerRegistry;
 
-class UserRepository
+class UserRepository extends ServiceEntityRepository
 {
-    private EntityRepository $repo;
-    public function __construct(
-        protected EntityManagerInterface $entityManager,
-    )
-    {
-        $this->repo = $this->entityManager->getRepository(User::class);
 
+    public function __construct(ManagerRegistry $registry, protected EntityManagerInterface $entityManager)
+    {
+        parent::__construct($registry, User::class);
     }
 
     /**
-     * @param  string  $token
-     * @return User|null
+     * @param string $token
+     * @return User|object|null
      */
     public function findByConfirmToken(string $token): ?User
     {
-        return $this->repo->findOneBy(['confirmToken' => $token]);
+        return $this->findOneBy(['confirmToken' => $token]);
     }
 
     /**
-     * @param  string  $token
-     * @return User|null
+     * @param string $token
+     * @return User|object|null
      */
     public function findByResetToken(string $token): ?User
     {
-        return $this->repo->findOneBy(['token' => $token]);
+        return $this->findOneBy(['resetToken.token' => $token]);
     }
 
     public function get(Id $id): User
     {
-        if (!$user = $this->repo->find($id->getValue())) {
-            throw new \App\Model\EntityNotFoundException('User is not found.');
+        /** @var User $user */
+        if (!$user = $this->find($id->getValue())) {
+            throw new EntityNotFoundException('User is not found.');
         }
         return $user;
     }
 
-    /**
-     * @param  Email  $email  - The email address to search for.
-     * @return User - The user object if found.
-     * @throws EntityNotFoundException - If user is not found.
-     */
     public function getByEmail(Email $email): User
     {
-        if (!$user = $this->repo->findOneBy(['email' => $email->getValue()])) {
+        /** @var User $user */
+        if (!$user = $this->findOneBy(['email' => $email->getValue()])) {
             throw new EntityNotFoundException('User is not found.');
         }
         return $user;
@@ -60,7 +56,7 @@ class UserRepository
 
     public function hasByEmail(Email $email): bool
     {
-        return $this->repo->createQueryBuilder('t')
+        return $this->createQueryBuilder('t')
                 ->select('COUNT(t.id)')
                 ->andWhere('t.email = :email')
                 ->setParameter(':email', $email->getValue())
@@ -69,7 +65,7 @@ class UserRepository
 
     public function hasByNetworkIdentity(string $network, string $identity): bool
     {
-        return $this->repo->createQueryBuilder('t')
+        return $this->createQueryBuilder('t')
                 ->select('COUNT(t.id)')
                 ->innerJoin('t.networks', 'n')
                 ->andWhere('n.network = :network and n.identity = :identity')
@@ -82,6 +78,4 @@ class UserRepository
     {
         $this->entityManager->persist($user);
     }
-
-
 }

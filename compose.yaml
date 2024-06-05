@@ -59,6 +59,8 @@ services:
     ports:
       - "51620:5432"
 
+ 
+
 volumes:
   caddy_data:
   caddy_config:
