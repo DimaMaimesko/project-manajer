@@ -2,26 +2,22 @@
 
 declare(strict_types=1);
 
-namespace App\Model\User\UseCase\Reset\Reset;
+namespace App\Model\User\UseCase\Login\Request;
 
-use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Constraint as Assert;
 
 class Command
 {
     /**
      * @var string
      * @Assert\NotBlank()
+     * @Assert\Email()
      */
-    public $token;
+    public $email;
     /**
      * @var string
      * @Assert\NotBlank()
      * @Assert\Length(min=6)
      */
     public $password;
-
-    public function __construct(string $token)
-    {
-        $this->token = $token;
-    }
 }

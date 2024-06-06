@@ -11,9 +11,9 @@ class ResetTokenizer
 {
     private $interval;
 
-    public function __construct(\DateInterval $interval)
+    public function __construct(string $interval)
     {
-        $this->interval = $interval;
+        $this->interval = new \DateInterval($interval);
     }
 
     public function generate(): ResetToken

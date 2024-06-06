@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Model\User\Entity\User;
 
+use App\Model\User\Service\PasswordHasher;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -143,6 +144,11 @@ class User
         return $this->status === self::STATUS_NEW;
     }
 
+    public function isPasswordCorrect($password): bool
+    {
+        return true;
+    }
+
     public function isWait(): bool
     {
         return $this->status === self::STATUS_WAIT;
@@ -178,9 +184,9 @@ class User
         return $this->confirmToken;
     }
 
-    public function getResetToken(): ?ResetToken
+    public function getResetToken(): ?string
     {
-        return $this->resetToken;
+        return $this->resetToken->getToken();
     }
 
     /**

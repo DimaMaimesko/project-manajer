@@ -28,7 +28,7 @@
     <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
         <div class="container">
 
-            <a class="navbar-brand" href="{{ path('auth.signup') }}">App</a>
+            <a class="navbar-brand" href="{{ path('home') }}">App</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -37,9 +37,19 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ path('auth.signup') }}">Home</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ path('auth.signup') }}">Sign Up</a>
-                    </li>
+                    {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('auth.logout') }}">Logout</a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('auth.signup') }}">Sign Up</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('auth.login') }}">Log In</a>
+                        </li>
+                    {% endif %}
+
                 </ul>
             </div>
         </div>

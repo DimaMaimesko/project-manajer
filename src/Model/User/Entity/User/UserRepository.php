@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Model\User\Entity\User;
 
 use App\Model\EntityNotFoundException;
+use App\Model\User\Service\PasswordHasher;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
@@ -13,7 +14,11 @@ use Doctrine\Persistence\ManagerRegistry;
 class UserRepository extends ServiceEntityRepository
 {
 
-    public function __construct(ManagerRegistry $registry, protected EntityManagerInterface $entityManager)
+    public function __construct(
+        ManagerRegistry $registry,
+        protected EntityManagerInterface $entityManager,
+        protected PasswordHasher $passwordHasher
+    )
     {
         parent::__construct($registry, User::class);
     }
@@ -49,6 +54,15 @@ class UserRepository extends ServiceEntityRepository
     {
         /** @var User $user */
         if (!$user = $this->findOneBy(['email' => $email->getValue()])) {
+            throw new EntityNotFoundException('User is not found.');
+        }
+        return $user;
+    }
+
+    public function getByPassword($password): User
+    {
+        /** @var User $user */
+        if (!$user = $this->findOneBy(['password' => $this->passwordHasher->hash($password)])) {
             throw new EntityNotFoundException('User is not found.');
         }
         return $user;

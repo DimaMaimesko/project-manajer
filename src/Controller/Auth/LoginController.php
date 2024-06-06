@@ -4,16 +4,15 @@ declare(strict_types=1);
 
 namespace App\Controller\Auth;
 
-use App\Model\User\UseCase\SignUp;
+use App\Model\User\UseCase\Login;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 
-class SignUpController extends AbstractController
+class LoginController extends AbstractController
 {
     private $logger;
 
@@ -23,18 +22,18 @@ class SignUpController extends AbstractController
     }
 
 
-    #[Route('/signup', name: 'auth.signup', methods: ['GET', 'POST'])]
-    public function request(Request $request, SignUp\Request\Handler $handler): Response
+    #[Route('/login', name: 'auth.login', methods: ['GET', 'POST'])]
+    public function request(Request $request, Login\Request\Handler $handler): Response
     {
-        $command = new SignUp\Request\Command();
+        $command = new Login\Request\Command();
 
-        $form = $this->createForm(SignUp\Request\Form::class, $command);
+        $form = $this->createForm(Login\Request\Form::class, $command);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
                 $handler->handle($command);
-                $this->addFlash('success', 'Check your email.');
+                $this->addFlash('success', 'You are Logged in!!!');
                 return $this->redirectToRoute('home');
             } catch (\DomainException $e) {
                 $this->logger->error($e->getMessage(), ['exception' => $e]);
@@ -42,7 +41,7 @@ class SignUpController extends AbstractController
             }
         }
 
-        return $this->render('app/auth/signup.html.twig', [
+        return $this->render('app/auth/login.html.twig', [
             'form' => $form->createView(),
         ]);
     }
