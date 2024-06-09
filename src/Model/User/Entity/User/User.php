@@ -7,6 +7,8 @@ namespace App\Model\User\Entity\User;
 use App\Model\User\Service\PasswordHasher;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(
@@ -18,7 +20,7 @@ use Doctrine\ORM\Mapping as ORM;
 ),
     ORM\Index(name: 'IDX_USER_USER_ID', columns: ['id'])
 ]
-class User
+class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     private const STATUS_NEW = 'new';
     private const STATUS_WAIT = 'wait';
@@ -195,5 +197,28 @@ class User
     public function getNetworks(): array
     {
         return $this->networks->toArray();
+    }
+
+    public function getRoles(): array
+    {
+        // TODO: Implement getRoles() method.
+        return [$this->role];
+    }
+
+    public function eraseCredentials(): void
+    {
+        // TODO: Implement eraseCredentials() method.
+    }
+
+    public function getUserIdentifier(): string
+    {
+        // TODO: Implement getUserIdentifier() method.
+        return $this->email->getValue();
+    }
+
+    public function getPassword(): ?string
+    {
+        // TODO: Implement getPassword() method.
+        return $this->passwordHash;
     }
 }
