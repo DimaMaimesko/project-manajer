@@ -45,3 +45,10 @@ services:
     ports:
       - "1025:1025"
       - "8025:8025"
+
+  node:
+    image: node:18
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: npm run start
