@@ -43,13 +43,12 @@ class RequestTest extends TestCase
 
         $token1 = new ResetToken('token', $now->modify('+1 day'));
         $user->requestPasswordReset($token1, $now);
-
-        self::assertEquals($token1, $user->getResetToken());
+        self::assertEquals($token1->getToken(), $user->getResetToken());
 
         $token2 = new ResetToken('token', $now->modify('+3 day'));
         $user->requestPasswordReset($token2, $now->modify('+2 day'));
 
-        self::assertEquals($token2, $user->getResetToken());
+        self::assertEquals($token2->getToken(), $user->getResetToken());
     }
 
     public function testNotConfirmed(): void

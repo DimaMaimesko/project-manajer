@@ -188,7 +188,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getResetToken(): ?string
     {
-        return $this->resetToken->getToken();
+        return $this->resetToken?->getToken();
     }
 
     /**
