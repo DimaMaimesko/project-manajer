@@ -20,6 +20,9 @@ services:
     volumes:
       - caddy_data:/data
       - caddy_config:/config
+      - ~/PhpstormProjects/docker-symfony/Caddyfile:/etc/caddy/Caddyfile
+      - ~/PhpstormProjects/docker-symfony/localhost.crt:/etc/caddy/localhost.crt
+      - ~/PhpstormProjects/docker-symfony/localhost.key:/etc/caddy/localhost.key
     ports:
       # HTTP
       - target: 80
