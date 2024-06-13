@@ -1,5 +1,5 @@
 shell:
-	docker exec -it project-manager-php-1 bash
+	docker exec -it project-manager-php bash
 npm-install:
 	docker-compose run --rm node yarn install
 dep-add:

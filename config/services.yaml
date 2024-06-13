@@ -25,3 +25,15 @@ services:
     App\Model\User\Service\ResetTokenizer:
         arguments:
             $interval: '%app.reset_token_expire%'
+            
+    Redis:
+        class: Redis
+        calls:
+            -   method: connect
+                arguments:
+                    - 'redis'
+                    - '6379'
+    
+    Symfony\Component\HttpFoundation\Session\Storage\Handler\RedisSessionHandler:
+        arguments:
+            - '@Redis'

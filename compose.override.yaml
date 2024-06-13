@@ -1,6 +1,7 @@
 # Development environment override
 services:
   php:
+    container_name: php
     build:
       context: .
       target: frankenphp_dev
@@ -25,6 +26,7 @@ services:
 
 ###> doctrine/doctrine-bundle ###
   database:
+    container_name: database
     ports:
       - "5432"
 ###< doctrine/doctrine-bundle ###
@@ -40,6 +42,7 @@ services:
 #      MP_SMTP_AUTH_ALLOW_INSECURE: 1
 ###< symfony/mailer ###
   mailhog:
+    container_name: mailhog
     image: mailhog/mailhog:latest
     restart: always
     ports:
@@ -47,8 +50,17 @@ services:
       - "8025:8025"
 
   node:
+    container_name: node
     image: node:18
     volumes:
       - .:/app
     working_dir: /app
     command: npm run start
+    
+  redis:
+    image: redis:latest
+    container_name: redis
+    restart: always
+    ports:
+      - '6379:6379'
+  

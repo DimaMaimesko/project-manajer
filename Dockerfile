@@ -33,6 +33,11 @@ RUN set -eux; \
 		zip \
 	;
 
+# Install the Redis extension.
+RUN pecl install redis \
+    && docker-php-ext-enable redis \
+    && echo "extension=redis.so" >> /usr/local/etc/php/php.ini \
+
 # https://getcomposer.org/doc/03-cli.md#composer-allow-superuser
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
@@ -93,3 +98,4 @@ RUN set -eux; \
 	composer dump-env prod; \
 	composer run-script --no-dev post-install-cmd; \
 	chmod +x bin/console; sync;
+
