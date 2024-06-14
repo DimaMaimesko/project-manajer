@@ -53,7 +53,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Network::class, mappedBy: 'user', cascade: ['persist'], orphanRemoval: true)]
     private $networks;
 
-    #[Column(type: 'user_user_role', nullable: true)]
+    #[ORM\Column(type: 'string', length: 16, nullable: true)]
     private $role;
 
     private function __construct(Id $id, \DateTimeImmutable $date)

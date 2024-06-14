@@ -6,6 +6,7 @@ namespace App\ReadModel\User;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
+use Doctrine\DBAL\FetchMode;
 
 class UserFetcher
 {
@@ -32,5 +33,21 @@ class UserFetcher
             ->executeQuery();
 
         return $query->fetchOne() > 0;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function findByEmail(string $email): array
+    {
+        $stmt = $this->connection->createQueryBuilder()
+            ->select('*')
+            ->from('user_users')
+            ->where('email = :email')
+            ->setParameter('email', $email);
+
+        $user = $stmt->executeQuery()->fetchAssociative();
+
+        return $user;
     }
 }
