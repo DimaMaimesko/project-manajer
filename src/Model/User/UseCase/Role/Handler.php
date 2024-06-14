@@ -23,7 +23,6 @@ class Handler
     public function handle(Command $command): void
     {
         $user = $this->users->get(new Id($command->id));
-
         $user->changeRole(new Role($command->role));
 
         $this->flusher->flush();
