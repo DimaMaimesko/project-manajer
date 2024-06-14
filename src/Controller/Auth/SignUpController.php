@@ -10,7 +10,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 
 class SignUpController extends AbstractController
@@ -49,9 +48,9 @@ class SignUpController extends AbstractController
 
 
     #[Route('/signup/{token}', name: 'auth.signup.confirm', methods: ['GET', 'POST'])]
-    public function confirm(string $token, SignUp\Confirm\Handler $handler): Response
+    public function confirm(string $token, SignUp\Confirm\ByToken\Handler $handler): Response
     {
-        $command = new SignUp\Confirm\Command($token);
+        $command = new SignUp\Confirm\ByToken\Command($token);
         try {
             $handler->handle($command);
             $this->addFlash('success', 'Email is successfully confirmed.');
