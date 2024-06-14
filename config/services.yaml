@@ -37,3 +37,7 @@ services:
     Symfony\Component\HttpFoundation\Session\Storage\Handler\RedisSessionHandler:
         arguments:
             - '@Redis'
+   
+    App\Widget\:
+        resource: '../src/Widget'
+        tags: [ 'twig.extension' ]
