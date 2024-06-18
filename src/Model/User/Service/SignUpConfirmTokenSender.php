@@ -9,7 +9,7 @@ use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail  as SymfonyEmail;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-class ConfirmTokenSender
+class SignUpConfirmTokenSender
 {
     public function __construct(
         protected MailerInterface $mailer,

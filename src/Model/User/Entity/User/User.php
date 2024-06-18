@@ -35,11 +35,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'user_user_email', unique: true, nullable: true)]
     private $email;
 
+    #[ORM\Column(name: 'new_email',type: 'user_user_email', unique: true, nullable: true)]
+    private $newEmail;
+
     #[ORM\Column(name: 'password_hash', type: 'string', length: 255, nullable: true)]
     private $passwordHash;
 
     #[ORM\Column(name: 'confirm_token', type: 'string', length: 255, nullable: true)]
     private $confirmToken;
+
+    #[ORM\Column(name: 'new_email_confirm_token', type: 'string', length: 255, nullable: true)]
+    private $newEmailConfirmToken;
 
     #[ORM\Embedded(class: ResetToken::class, columnPrefix: 'reset_token_')]
     private $resetToken;
@@ -136,6 +142,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->role = $role;
     }
 
+    public function requestEmailChanging(Email $email, string $token): void
+    {
+        if (!$this->isActive()) {
+            throw new \DomainException('User is not active.');
+        }
+        if ($this->email && $this->email->isEqual($email)) {
+            throw new \DomainException('Email is already same.');
+        }
+        $this->newEmail = $email;
+        $this->newEmailConfirmToken = $token;
+    }
+
+    public function confirmEmailChanging(string $token): void
+    {
+
+        if (!$this->newEmailConfirmToken) {
+            throw new \DomainException('Changing is not requested.');
+        }
+
+        if ($this->newEmailConfirmToken !== $token) {
+            throw new \DomainException('Incorrect changing token.');
+        }
+
+        $this->email = $this->newEmail;
+        $this->newEmail = null;
+        $this->newEmailConfirmToken = null;
+    }
+
+
     public function getRole(): Role
     {
         return $this->role;
@@ -220,5 +255,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // TODO: Implement getPassword() method.
         return $this->passwordHash;
+    }
+
+    public function getNewEmailToken(): ?string
+    {
+        return $this->newEmailConfirmToken;
+    }
+
+    public function getNewEmail()
+    {
+        return $this->newEmail;
     }
 }

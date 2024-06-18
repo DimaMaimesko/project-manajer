@@ -32,11 +32,14 @@
 </head>
 <body>
 <div class="container">
-    <p>Sign Up confirm link:</p>
+    <p>Email Confirm Link:</p>
 
-    {% set url = url('auth.signup.confirm', {'token': token}) %}
+    {% set url = url('profile.email.confirm', {'token': token}) %}
 
     <p><a href="{{ url }}">{{ url }}</a></p>
 </div>
 </body>
 </html>
+
+
+

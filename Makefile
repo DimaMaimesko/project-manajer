@@ -19,3 +19,4 @@ redis-cli:
 	docker exec -it redis redis-cli
 tests:
 	docker exec -it php ./vendor/bin/phpunit
+# php bin/console doctrine:migrations:diff
