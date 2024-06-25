@@ -6,13 +6,14 @@ namespace App\Model\User\UseCase\SignUp\Confirm\ByToken;
 
 use App\Model\Flusher;
 use App\Model\User\Entity\User\UserRepository;
+use Symfony\Bundle\SecurityBundle\Security;
 
 class Handler
 {
     private $users;
     private $flusher;
 
-    public function __construct(UserRepository $users, Flusher $flusher)
+    public function __construct(UserRepository $users, Flusher $flusher, protected Security $security)
     {
         $this->users = $users;
         $this->flusher = $flusher;
@@ -27,5 +28,7 @@ class Handler
         $user->confirmSignUp();
 
         $this->flusher->flush();
+
+        $this->security->login($user);
     }
 }
