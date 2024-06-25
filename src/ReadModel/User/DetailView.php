@@ -13,6 +13,8 @@ class DetailView
     public $email;
     public $role;
     public $status;
+    public $first_name;
+    public $last_name;
     /**
      * @var NetworkView[]
      */
@@ -25,6 +27,9 @@ class DetailView
         $this->email = $user['email'] ?? null;
         $this->role = $user['role'] ?? null;
         $this->status = $user['status'] ?? null;
+        $this->first_name = $user['first_name'] ?? null;
+        $this->last_name = $user['last_name'] ?? null;
+
     }
 
     public function toArray(): array
@@ -36,6 +41,8 @@ class DetailView
             'role' => $this->role,
             'status' => $this->status,
             'networks' => $this->networks,
+            'first_name' => $this->first_name,
+            'last_name' => $this->last_name,
         ];
     }
 }

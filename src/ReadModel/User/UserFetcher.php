@@ -62,6 +62,9 @@ class UserFetcher
                 'id',
                 'date',
                 'email',
+                'name_first first_name',
+                'name_last last_name',
+                'email',
                 'role',
                 'status'
             )
@@ -90,5 +93,13 @@ class UserFetcher
         $detailView->networks = $networks;
 
         return $detailView;
+    }
+
+    public function getDetail(Id $id): DetailView
+    {
+        if (!$detail = $this->findDetail($id)) {
+            throw new \LogicException('User is not found');
+        }
+        return $detail;
     }
 }

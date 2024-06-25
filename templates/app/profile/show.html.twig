@@ -24,11 +24,18 @@
                         <th>Created</th>
                         <td>{{ date|date('Y-m-d H:i:s') }}</td>
                     </tr>
+                    <tr>
+                        <th>Name</th>
+                        <td>
+                            {{ first_name }} {{ last_name }}
+                        <td><a href="{{ path('profile.name') }}" class="btn btn-sm btn-outline-primary"><span class="fa fa-pencil"></span>Change Name</a></td>
+                        </td>
+                    </tr>
                     {% if email %}
                         <tr>
                             <th>Email</th>
                             <td>{{ email }}</td>
-                            <td><a href="{{ path('profile.email') }}">Change Email</a></td>
+                            <td><a href="{{ path('profile.email') }}" class="btn btn-sm btn-outline-primary">Change Email</a></td>
                         </tr>
                     {% endif %}
                     <tr>

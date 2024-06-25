@@ -62,17 +62,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string', length: 16, nullable: true)]
     private $role;
 
-    private function __construct(Id $id, \DateTimeImmutable $date)
+
+    #[ORM\Embedded(class: 'Name')]
+    private $name;
+
+    private function __construct(Id $id, \DateTimeImmutable $date, Name $name)
     {
         $this->id = $id;
         $this->date = $date;
-        $this->networks = new ArrayCollection();
+        $this->name = $name;
         $this->role = Role::user();
+        $this->networks = new ArrayCollection();
     }
 
-    public static function signUpByEmail(Id $id, \DateTimeImmutable $date, Email $email, string $hash, string $token): self
+    public static function signUpByEmail(Id $id, \DateTimeImmutable $date, Name $name, Email $email, string $hash, string $token): self
     {
-        $user = new self($id, $date);
+        $user = new self($id, $date, $name);
         $user->email = $email;
         $user->passwordHash = $hash;
         $user->confirmToken = $token;
@@ -265,5 +270,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getNewEmail()
     {
         return $this->newEmail;
+    }
+
+    public function changeName(Name $name): void
+    {
+        $this->name = $name;
+    }
+
+    public function getName(): Name
+    {
+        return $this->name;
     }
 }
