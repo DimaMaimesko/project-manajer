@@ -11,6 +11,9 @@
 {% endblock %}
 
 {% block body %}
+    <div class="controls">
+        <a href="{{ path('users.edit', {'id': user.id}) }}" class="btn btn-primary">Edit</a>
+    </div>
 
     <div class="box">
         <table class="table table-bordered">
@@ -33,7 +36,7 @@
                 </tr>
                 <tr>
                     <th>Role</th>
-                    <td>{{ user_role(user.role.name) }}</td>
+                    <td>{{ user_role(user.role) }}</td>
                 </tr>
                 <tr>
                     <th>Status</th>

@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use App\Model\User\UseCase\Create;
+use App\Model\User\UseCase\Edit;
 
 
 class UsersController extends AbstractController
@@ -31,14 +32,33 @@ class UsersController extends AbstractController
         return $this->render('app/users/index.html.twig', compact('users'));
     }
 
-    #[Route('/users/{id}', name: 'users.show', methods: ['GET'])]
-    public function show(User $user): Response
+    #[Route('users/{id}/edit', name: 'users.edit', methods: ['GET', 'POST'])]
+    public function edit(User $user, Request $request, Edit\Handler $handler): Response
     {
+        $command = Edit\Command::fromUser($user);
 
-        return $this->render('app/users/show.html.twig', compact('user'));
+        $form = $this->createForm(Edit\Form::class, $command);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            try {
+                $handler->handle($command);
+                return $this->redirectToRoute('users.show', ['id' => $user->getId()]);
+            } catch (\DomainException $e) {
+                $this->logger->error($e->getMessage(), ['exception' => $e]);
+                $this->addFlash('error', $e->getMessage());
+            }
+        }
+
+        return $this->render('app/users/edit.html.twig', [
+            'user' => $user,
+            'form' => $form->createView(),
+        ]);
     }
 
-    #[Route('/create', name: 'users.create', methods: ['GET', 'POST'])]
+
+
+    #[Route('users/create', name: 'users.create', methods: ['GET', 'POST'])]
     public function create(Request $request, Create\Handler $handler, LoggerInterface $logger): Response
     {
         $command = new Create\Command();
@@ -60,4 +80,14 @@ class UsersController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+
+    #[Route('/users/{id}', name: 'users.show', methods: ['GET'])]
+    public function show(User $user): Response
+    {
+
+        return $this->render('app/users/show.html.twig', compact('user'));
+    }
+
+
+
 }

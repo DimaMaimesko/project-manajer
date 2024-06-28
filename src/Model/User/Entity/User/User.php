@@ -295,4 +295,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return $this->name;
     }
+
+    public function edit(Email $email, Name $name): void
+    {
+        $this->name = $name;
+        $this->email = $email;
+    }
 }
