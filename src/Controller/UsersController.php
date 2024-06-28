@@ -6,9 +6,12 @@ namespace App\Controller;
 
 use App\Model\User\Entity\User\User;
 use App\ReadModel\User\UserFetcher;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use App\Model\User\UseCase\Create;
 
 
 class UsersController extends AbstractController
@@ -33,5 +36,28 @@ class UsersController extends AbstractController
     {
 
         return $this->render('app/users/show.html.twig', compact('user'));
+    }
+
+    #[Route('/create', name: 'users.create', methods: ['GET', 'POST'])]
+    public function create(Request $request, Create\Handler $handler, LoggerInterface $logger): Response
+    {
+        $command = new Create\Command();
+
+        $form = $this->createForm(Create\Form::class, $command);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            try {
+                $handler->handle($command);
+                return $this->redirectToRoute('users');
+            } catch (\DomainException $e) {
+                $logger->error($e->getMessage(), ['exception' => $e]);
+                $this->addFlash('error', $e->getMessage());
+            }
+        }
+
+        return $this->render('app/users/create.html.twig', [
+            'form' => $form->createView(),
+        ]);
     }
 }
