@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Builder\User;
 
 use App\Model\User\Entity\User\Email;
+use App\Model\User\Entity\User\Name;
 use App\Model\User\Entity\User\User;
 use App\Model\User\Entity\User\Id;
 
@@ -57,6 +58,7 @@ class UserBuilder
             $user = User::signUpByEmail(
                 $this->id,
                 $this->date,
+                $name = new Name('Test', 'User'),
                 $this->email,
                 $this->hash,
                 $this->token

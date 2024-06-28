@@ -4,6 +4,7 @@ namespace App\DataFixtures;
 
 use App\Model\User\Entity\User\Email;
 use App\Model\User\Entity\User\Id;
+use App\Model\User\Entity\User\Name;
 use App\Model\User\Entity\User\Role;
 use App\Model\User\Entity\User\User;
 use App\Model\User\Service\PasswordHasher;
@@ -24,6 +25,7 @@ class UserFixtures extends Fixture
         $user = User::signUpByEmail(
             Id::next(),
             new \DateTimeImmutable(),
+            $name = new Name('Test', 'User'),
             new Email('admin@admin.admin'),
             $hash,
             'token'

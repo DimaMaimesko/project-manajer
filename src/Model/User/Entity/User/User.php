@@ -97,7 +97,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public static function signUpByNetwork(Id $id, \DateTimeImmutable $date, string $network, string $identity): self
     {
-        $user = new self($id, $date);
+        $user = new self($id, $date, new Name('Test', 'User'));
         $user->attachNetwork($network, $identity);
         $user->status = self::STATUS_ACTIVE;
         return $user;
@@ -176,7 +176,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
 
-    public function getRole(): Role
+    public function getRole()
     {
         return $this->role;
     }
@@ -270,6 +270,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getNewEmail()
     {
         return $this->newEmail;
+    }
+
+    public function getStatus(): string
+    {
+        return $this->status;
     }
 
     public function changeName(Name $name): void

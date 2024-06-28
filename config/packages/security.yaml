@@ -36,9 +36,9 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-#        - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-#        - { path: ^/signup, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-#        - { path: ^/reset, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+#        - { path: ^/login, roles: ROLE_USER }
+#        - { path: ^/signup, roles: ROLE_USER}
+#        -  { path: ^/reset, roles: ROLE_USER }
 #        - { path: ^/, roles: ROLE_USER }
 
 when@test:

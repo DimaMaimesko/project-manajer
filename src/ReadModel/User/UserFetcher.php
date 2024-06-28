@@ -102,4 +102,25 @@ class UserFetcher
         }
         return $detail;
     }
+
+    /**
+     * @throws Exception
+     */
+    public function all(): array
+    {
+        $stmt = $this->connection->createQueryBuilder()
+            ->select(
+                'id',
+                'date',
+                'TRIM(CONCAT(name_first, \' \', name_last)) AS name',
+                'email',
+                'role',
+                'status'
+            )
+            ->from('user_users')
+            ->orderBy('date', 'desc')
+            ->executeQuery();
+
+        return $stmt->fetchAllAssociative();
+    }
 }
