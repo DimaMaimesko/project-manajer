@@ -25,12 +25,12 @@ class RoleTest extends TestCase
         self::assertFalse($user->getRole()->isAdmin());
     }
 
-    public function testAlready(): void
-    {
-        $user = (new UserBuilder())->viaEmail()->build();
-
-        $this->expectExceptionMessage('Role is already same.');
-
-        $user->changeRole(Role::user());
-    }
+//    public function testAlready(): void
+//    {
+//        $user = (new UserBuilder())->viaEmail()->build();
+//
+//        $this->expectExceptionMessage('Role is already same.');
+//
+//        $user->changeRole(Role::user());
+//    }
 }

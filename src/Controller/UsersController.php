@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use App\Model\User\UseCase\Create;
 use App\Model\User\UseCase\Edit;
+use App\Model\User\UseCase\Role;
 
 
 class UsersController extends AbstractController
@@ -81,12 +82,40 @@ class UsersController extends AbstractController
         ]);
     }
 
+
+    #[Route('/users/{id}/role', name: 'users.role', methods: ['GET', 'POST'])]
+    public function role(User $user, Request $request, Role\Handler $handler, LoggerInterface $logger): Response
+    {
+        $command = Role\Command::fromUser($user);
+
+        $form = $this->createForm(Role\Form::class, $command);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            try {
+                $handler->handle($command);
+                return $this->redirectToRoute('users.show', ['id' => $user->getId()]);
+            } catch (\DomainException $e) {
+                $logger->error($e->getMessage(), ['exception' => $e]);
+                $this->addFlash('error', $e->getMessage());
+            }
+        }
+
+        return $this->render('app/users/role.html.twig', [
+            'user' => $user,
+            'form' => $form->createView(),
+        ]);
+    }
+
+
     #[Route('/users/{id}', name: 'users.show', methods: ['GET'])]
     public function show(User $user): Response
     {
 
         return $this->render('app/users/show.html.twig', compact('user'));
     }
+
+
 
 
 

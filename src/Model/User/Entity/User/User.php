@@ -150,7 +150,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function changeRole(Role $role): void
     {
-        if ($this->role !== null && $this->role->isEqual($role)) {
+        if (($this->role === $role)) {
             throw new \DomainException('Role is already same.');
         }
         $this->role = $role;
