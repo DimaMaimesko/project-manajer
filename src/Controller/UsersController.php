@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Model\User\Entity\User\User;
+use App\ReadModel\User\Filter\Form;
 use App\ReadModel\User\UserFetcher;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -14,7 +15,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use App\Model\User\UseCase\Create;
 use App\Model\User\UseCase\Edit;
 use App\Model\User\UseCase\Role;
-
+use App\ReadModel\User\Filter\Filter;
 
 class UsersController extends AbstractController
 {
@@ -26,11 +27,19 @@ class UsersController extends AbstractController
     }
 
     #[Route('/users', name: 'users', methods: ['GET'])]
-    public function index(): Response
+    public function index(Request $request, UserFetcher $fetcher): Response
     {
-        $users = $this->users->all();
+        $filter = new Filter();
 
-        return $this->render('app/users/index.html.twig', compact('users'));
+        $form = $this->createForm(Form::class, $filter);
+        $form->handleRequest($request);
+
+        $users = $fetcher->all($filter);
+
+        return $this->render('app/users/index.html.twig', [
+            'users' => $users,
+            'form' => $form->createView(),
+        ]);
     }
 
     #[Route('users/{id}/edit', name: 'users.edit', methods: ['GET', 'POST'])]

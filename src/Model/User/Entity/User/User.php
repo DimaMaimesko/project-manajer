@@ -22,9 +22,9 @@ use Symfony\Component\Security\Core\User\UserInterface;
 ]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
-    private const STATUS_NEW = 'new';
-    private const STATUS_WAIT = 'wait';
-    private const STATUS_ACTIVE = 'active';
+    public const STATUS_NEW = 'new';
+    public const STATUS_WAIT = 'wait';
+    public const STATUS_ACTIVE = 'active';
 
     #[ORM\Column(type: 'user_user_id'), ORM\Id]
     private $id;
