@@ -7,6 +7,7 @@
 
 // any CSS you import will output into a single css file (app.scss in this case)
 import './styles/app.scss';
+import '@fortawesome/fontawesome-free/css/all.css';
 //require('../css/app.scss');
 
 require('bootstrap');
