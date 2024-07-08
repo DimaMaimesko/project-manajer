@@ -9,12 +9,16 @@ use App\ReadModel\User\Filter\Filter;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\FetchMode;
+use Knp\Component\Pager\Pagination\PaginationInterface;
+use Knp\Component\Pager\PaginatorInterface;
 
 class UserFetcher
 {
     private $connection;
 
-    public function __construct(Connection $connection)
+    public function __construct(
+        Connection $connection,
+        protected PaginatorInterface $paginator)
     {
         $this->connection = $connection;
     }
@@ -147,6 +151,54 @@ class UserFetcher
 
         return $stmt->fetchAllAssociative();
     }
+
+    /**
+     * @param Filter $filter
+     * @return array[]
+     */
+    public function paginate(Filter $filter, $page, $limit): PaginationInterface
+    {
+        $qb = $this->connection->createQueryBuilder()
+            ->select(
+                'id',
+                'date',
+                'TRIM(CONCAT(name_first, \' \', name_last)) AS name',
+                'email',
+                'role',
+                'status'
+            )
+            ->from('user_users')
+            ->orderBy('date', 'desc');
+
+        if ($filter->name) {
+            $qb->andWhere($qb->expr()->like('LOWER(CONCAT(name_first, \' \', name_last))', ':name'));
+            $qb->setParameter('name', '%' . mb_strtolower($filter->name) . '%');
+        }
+
+        if ($filter->email) {
+            $qb->andWhere($qb->expr()->like('LOWER(email)', ':email'));
+            $qb->setParameter('email', '%' . mb_strtolower($filter->email) . '%');
+        }
+
+        if ($filter->status) {
+            $qb->andWhere('status = :status');
+            $qb->setParameter('status', $filter->status);
+        }
+
+        if ($filter->role) {
+            $qb->andWhere('role = :role');
+            $qb->setParameter('role', $filter->role);
+        }
+
+        $pagination = $this->paginator->paginate(
+            $qb, /* query NOT result */
+            $page, /*page number*/
+            $limit /*limit per page*/
+        );
+
+        return $pagination;
+    }
+
 
 
 }

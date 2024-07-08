@@ -20,6 +20,7 @@ use App\ReadModel\User\Filter\Filter;
 class UsersController extends AbstractController
 {
     private $users;
+    const int LIMIT = 5;
 
     public function __construct(UserFetcher $users)
     {
@@ -34,10 +35,16 @@ class UsersController extends AbstractController
         $form = $this->createForm(Form::class, $filter);
         $form->handleRequest($request);
 
-        $users = $fetcher->all($filter);
+        $pagination = $fetcher->paginate(
+            $filter,
+            $request->query->getInt('page', 1),
+            self::LIMIT,
+            $request->query->get('sort', 'date'),
+            $request->query->get('direction', 'desc')
+        );
 
         return $this->render('app/users/index.html.twig', [
-            'users' => $users,
+            'pagination' => $pagination,
             'form' => $form->createView(),
         ]);
     }
