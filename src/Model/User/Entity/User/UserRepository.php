@@ -7,7 +7,6 @@ namespace App\Model\User\Entity\User;
 use App\Model\EntityNotFoundException;
 use App\Model\User\Service\PasswordHasher;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 

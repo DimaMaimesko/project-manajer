@@ -20,3 +20,5 @@ redis-cli:
 tests:
 	docker exec -it php ./vendor/bin/phpunit
 # php bin/console doctrine:migrations:diff
+manager-fixtures:
+	docker-compose run --rm php php bin/console doctrine:fixtures:load --no-interaction
