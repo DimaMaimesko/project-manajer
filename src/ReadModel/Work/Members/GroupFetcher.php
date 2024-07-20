@@ -29,4 +29,18 @@ class GroupFetcher
 
         return $stmt->fetchAllAssociative();
     }
+
+    public function assoc(): array
+    {
+        $stmt = $this->connection->createQueryBuilder()
+            ->select(
+                'id',
+                'name'
+            )
+            ->from('work_members_groups')
+            ->orderBy('name')
+            ->executeQuery();
+
+        return array_column($stmt->fetchAllAssociative(), 'name', 'id');
+    }
 }

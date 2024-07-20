@@ -7,6 +7,7 @@ namespace App\Controller;
 use App\Model\User\Entity\User\User;
 use App\ReadModel\User\Filter\Form;
 use App\ReadModel\User\UserFetcher;
+use App\ReadModel\Work\Members\Member\MemberFetcher;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,6 +17,7 @@ use App\Model\User\UseCase\Create;
 use App\Model\User\UseCase\Edit;
 use App\Model\User\UseCase\Role;
 use App\ReadModel\User\Filter\Filter;
+
 
 class UsersController extends AbstractController
 {
@@ -131,10 +133,10 @@ class UsersController extends AbstractController
 
 
     #[Route('/users/{id}', name: 'users.show', methods: ['GET'])]
-    public function show(User $user): Response
+    public function show(User $user, MemberFetcher $members): Response
     {
-
-        return $this->render('app/users/show.html.twig', compact('user'));
+        $member = $members->findOne($user->getId()->getValue());
+        return $this->render('app/users/show.html.twig', compact('user', 'member'));
     }
 
 
